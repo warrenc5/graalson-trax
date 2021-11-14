@@ -4,7 +4,7 @@
     <groupId>biz.mofokom</groupId>
     <artifactId>graalson-trax</artifactId>
     <packaging>jar</packaging>
-    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.0</version>
+    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.1-SNAPSHOT</version>
     <name>graalson-trax</name>
     <url xmlns:mvn="http://maven.apache.org/POM/4.0.0">https://github.com/warrenc5/graalson-trax</url>
     <description>Javax.TRAX EE bindings for Graalson graaljs</description>
@@ -231,7 +231,7 @@
         <developerConnection>scm:git:git@github.com:warrenc5/graalson-trax.git</developerConnection>
  
         <url>https://github.com/warrenc5/graalson-trax</url>
-        <tag>graalson-trax-1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
