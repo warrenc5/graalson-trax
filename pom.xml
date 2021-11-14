@@ -81,7 +81,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graalson</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
