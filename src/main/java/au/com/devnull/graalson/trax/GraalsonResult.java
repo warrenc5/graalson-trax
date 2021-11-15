@@ -14,11 +14,14 @@ public class GraalsonResult implements Result {
 
     private String systemId;
     private Value value;
-    private final JsonWriter jwriter;
+    private JsonWriter jwriter;
     private GraalsonStructure structure;
 
     public GraalsonResult(JsonWriter jwriter) {
         this.jwriter = jwriter;
+    }
+
+    public GraalsonResult() {
     }
 
     @Override

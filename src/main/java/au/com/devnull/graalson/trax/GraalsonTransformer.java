@@ -66,8 +66,9 @@ public class GraalsonTransformer extends Transformer implements Templates {
         getPolyglotContext().getBindings("js").putMember("_", javaValue);
 
         Value resultValue = getPolyglotContext().eval(((GraalsonSource) this.source).source);
-        if (resultValue.isNull()) {
-            resultValue = getPolyglotContext().getBindings("js").getMember("result");
+
+        if (!resultValue.hasMembers() || resultValue.isNull()) {
+            resultValue = getPolyglotContext().getBindings("js").getMember("$");
         }
 
         ((GraalsonResult) result).setValue(resultValue);
