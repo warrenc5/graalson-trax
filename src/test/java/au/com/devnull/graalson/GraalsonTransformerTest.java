@@ -11,6 +11,8 @@ import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -40,9 +42,9 @@ public class GraalsonTransformerTest {
 
         JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("default.json"));
 
-        GraalsonSource template = new GraalsonSource("template1.js");
-        GraalsonSource source = new GraalsonSource(jreader);
-        GraalsonResult result = new GraalsonResult(jwriter);
+        Source template = new GraalsonSource("template1.js");
+        Source source = new GraalsonSource(jreader);
+        Result result = new GraalsonResult(jwriter);
 
         long then = System.nanoTime();
         int i = 0;
@@ -52,7 +54,7 @@ public class GraalsonTransformerTest {
         }
 
         System.out.println((System.nanoTime() - then) / n);
-        assertNotNull(result.getValue());
+        assertNotNull(((GraalsonResult) result).getValue());
 
         String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json")).useDelimiter("\\Z").next();
         String actual = writer.getBuffer().toString();

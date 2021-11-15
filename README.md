@@ -47,9 +47,9 @@ Call transform
         JsonWriter jwriter = wfactory.createWriter(new PrintWriter(System.out));
         JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("default.json"));
 
-        GraalsonSource template = new GraalsonSource("template1.js");
-        GraalsonSource source = new GraalsonSource(jreader);
-        GraalsonResult result = new GraalsonResult(jwriter);
+        Source template = new GraalsonSource("template1.js");
+        Source source = new GraalsonSource(jreader);
+        Result result = new GraalsonResult(jwriter);
 
         TransformerFactory.newInstance().newTemplates(template).newTransformer().transform(source, result);
 
