@@ -26,14 +26,15 @@ Load transformer
 
         delete _.address['postalCode']
 
-        var result =  {
-            'name': _.firstName + ' ' + _.lastName,
+        let geo = lookupGeo(_.address),
+        $ =  {
+            name: _.firstName + ' ' + _.lastName,
             'year-of-birth': 2021-_.age,
-            'address' : {
+            address : {
                 ... _.address,
-                'country': lookupCountry(_.city)
+                geo
             },
-            'phoneNumber': _.phoneNumber.filter(p=>p.type == 'home')[0].number
+            phoneNumber: _.phoneNumber.filter(p=>p.type == 'home')[0].number
         }
 
 Call transform 
@@ -74,3 +75,4 @@ Add dependency
             <artifactId>graalson-trax</artifactId>
             <version>1.0.0</version>
         </dependency>
+

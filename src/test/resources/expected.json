@@ -1,0 +1,14 @@
+{
+    "name": "John Smith",
+    "year-of-birth": 1996,
+    "address": {
+        "streetAddress": "21 2nd Street",
+        "city": "New York",
+        "state": "NY",
+        "geo": {
+            "x": 100,
+            "y": 200
+        }
+    },
+    "phoneNumber": "212 555-1234"
+}
