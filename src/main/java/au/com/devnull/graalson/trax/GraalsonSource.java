@@ -3,10 +3,10 @@ package au.com.devnull.graalson.trax;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonStructure;
 import javax.xml.transform.Source;
 
 /**

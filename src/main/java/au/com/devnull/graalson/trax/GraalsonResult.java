@@ -1,8 +1,7 @@
 package au.com.devnull.graalson.trax;
 
 import au.com.devnull.graalson.GraalsonStructure;
-import au.com.devnull.graalson.GraalsonValue;
-import javax.json.JsonWriter;
+import jakarta.json.JsonWriter;
 import javax.xml.transform.Result;
 import org.graalvm.polyglot.Value;
 

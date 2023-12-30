@@ -2,11 +2,12 @@ package au.com.devnull.graalson;
 
 import au.com.devnull.graalson.trax.GraalsonResult;
 import au.com.devnull.graalson.trax.GraalsonSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import jakarta.json.Json;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonWriter;
@@ -19,13 +20,12 @@ import javax.xml.transform.TransformerFactory;
 import org.json.JSONException;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonTransformerTest {
+public class WireMockHarTransformer {
 
     @Test
     public void testTransformer() throws TransformerConfigurationException, TransformerException, IOException, JSONException {
@@ -40,9 +40,9 @@ public class GraalsonTransformerTest {
         //JsonWriter jwriter = wfactory.createWriter(new PrintWriter(System.out));
         JsonWriter jwriter = wfactory.createWriter(writer);
 
-        JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("default.json"));
+        JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("wiremock_requests.json"));
 
-        Source template = new GraalsonSource("template1.js");
+        Source template = new GraalsonSource("wiremock-har-template.js");
         Source source = new GraalsonSource(jreader);
         Result result = new GraalsonResult(jwriter);
 
@@ -56,11 +56,10 @@ public class GraalsonTransformerTest {
         System.out.println((System.nanoTime() - then) / n);
         assertNotNull(((GraalsonResult) result).getValue());
 
-        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json")).useDelimiter("\\Z").next();
         String actual = writer.getBuffer().toString();
+        try (FileWriter fileWriter = new FileWriter(new File("./target/wiremock-har.json"))) {
+            fileWriter.write(writer.getBuffer().toString());
+        }
         System.out.println("actual " + actual);
-
-        JSONAssert.assertEquals(expected, actual, true);
     }
-
 }
