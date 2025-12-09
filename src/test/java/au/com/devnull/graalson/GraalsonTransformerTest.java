@@ -7,19 +7,21 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonWriter;
+import jakarta.json.JsonWriterFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import org.json.JSONException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  *
@@ -49,6 +51,7 @@ public class GraalsonTransformerTest {
         long then = System.nanoTime();
         int i = 0;
         int n = 1;
+        
         for (i = 0; i < n; i++) {
             TransformerFactory.newInstance().newTemplates(template).newTransformer().transform(source, result);
         }
@@ -58,9 +61,10 @@ public class GraalsonTransformerTest {
 
         String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json")).useDelimiter("\\Z").next();
         String actual = writer.getBuffer().toString();
-        System.out.println("actual " + actual);
+        System.out.println("actual -->" + actual +"<--");
 
-        JSONAssert.assertEquals(expected, actual, true);
+        assertEquals(expected.length(), actual.length());
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT_ORDER);
     }
 
 }

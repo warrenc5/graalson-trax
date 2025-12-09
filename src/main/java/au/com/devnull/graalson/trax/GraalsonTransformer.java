@@ -1,12 +1,12 @@
 package au.com.devnull.graalson.trax;
 
 import au.com.devnull.graalson.GraalsonProvider;
-import au.com.devnull.graalson.GraalsonStructure;
+import static au.com.devnull.graalson.GraalsonValue.toValue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.json.JsonStructure;
-import javax.json.spi.JsonProvider;
+import jakarta.json.JsonStructure;
+import jakarta.json.spi.JsonProvider;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -43,7 +43,6 @@ public class GraalsonTransformer extends Transformer implements Templates {
     }
 
     public GraalsonTransformer(ErrorListener errorListener, URIResolver resolver) {
-        this.properties = properties;
         this.errorListener = errorListener;
         this.resolver = resolver;
     }
@@ -62,7 +61,7 @@ public class GraalsonTransformer extends Transformer implements Templates {
         }
 
         JsonStructure value = ((GraalsonSource) input).getJsonStructure();
-        Object javaValue = provider.toValue(value);
+        Object javaValue = toValue(value);
         getPolyglotContext().getBindings("js").putMember("_", javaValue);
 
         Value resultValue = getPolyglotContext().eval(((GraalsonSource) this.source).source);

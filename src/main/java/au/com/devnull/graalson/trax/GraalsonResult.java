@@ -1,8 +1,11 @@
 package au.com.devnull.graalson.trax;
 
+import au.com.devnull.graalson.GraalsonProvider;
 import au.com.devnull.graalson.GraalsonStructure;
-import au.com.devnull.graalson.GraalsonValue;
-import javax.json.JsonWriter;
+import jakarta.json.JsonException;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonWriter;
+import jakarta.json.spi.JsonProvider;
 import javax.xml.transform.Result;
 import org.graalvm.polyglot.Value;
 
@@ -10,7 +13,7 @@ import org.graalvm.polyglot.Value;
  *
  * @author wozza
  */
-public class GraalsonResult implements Result {
+public class GraalsonResult implements Result, WritableStructure {
 
     private String systemId;
     private Value value;
@@ -36,9 +39,10 @@ public class GraalsonResult implements Result {
 
     void setValue(Value resultValue) {
         this.value = resultValue;
-        this.structure = new GraalsonStructure(value);
         if (this.jwriter != null) {
-            jwriter.write(this.structure);
+            JsonValue jsonValue = ((GraalsonProvider) JsonProvider.provider()).createValue(resultValue);
+            jwriter.write((GraalsonStructure)jsonValue);
+            jwriter.close();
         }
     }
 
@@ -48,5 +52,10 @@ public class GraalsonResult implements Result {
 
     public GraalsonStructure getStructure() {
         return structure;
+    }
+
+    @Override
+    public void writeStructure(JsonWriter writer) throws JsonException {
+        writer.write(this.structure);
     }
 }

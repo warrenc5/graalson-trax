@@ -21,5 +21,4 @@ $ =  {
     },
     phoneNumber: _.phoneNumber.filter(p=>p.type == 'home')[0].number
 }
-//console.log('result', JSON.stringify(result))
-//console.log('')
+console.log('result', JSON.stringify($))
