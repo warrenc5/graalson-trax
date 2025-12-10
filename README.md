@@ -70,9 +70,22 @@ Output
 
 Add dependency
             
+```
         <dependency>
-            <groupId>biz.mofokom</groupId>
+            <groupId>mobi.mofokom</groupId>
             <artifactId>graalson-trax</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
         </dependency>
+```
+        
+Library is uses Graalson
 
+https://www.github.com/warrenc5/graalson
+
+```
+        <dependency>
+            <groupId>mobi.mofokom</groupId>
+            <artifactId>graalson</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+```
