@@ -80,7 +80,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graalson</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
