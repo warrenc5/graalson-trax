@@ -11,6 +11,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonWriter;
 import jakarta.json.JsonWriterFactory;
+import java.util.Collections;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
@@ -32,7 +33,7 @@ public class GraalsonTransformerTest {
     @Test
     public void testTransformer() throws TransformerConfigurationException, TransformerException, IOException, JSONException {
 
-        System.setProperty("javax.xml.transform.TransformerFactory", "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
+        GraalsonProvider.useJavaxXmlTransformTransformerFactory();
 
         Map<String, Object> config = new HashMap<>();
         config.put("spaces", Integer.valueOf(4));
@@ -60,6 +61,33 @@ public class GraalsonTransformerTest {
         assertNotNull(((GraalsonResult) result).getValue());
 
         String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json")).useDelimiter("\\Z").next();
+        String actual = writer.getBuffer().toString();
+        System.out.println("actual -->" + actual +"<--");
+
+        assertEquals(expected.length(), actual.length());
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT_ORDER);
+    }
+
+    @Test
+    public void testTransformerJsConfig() throws TransformerConfigurationException, TransformerException, IOException, JSONException {
+
+        GraalsonProvider.useJavaxXmlTransformTransformerFactory();
+
+        StringWriter writer = new StringWriter();
+        JsonWriterFactory wfactory = Json.createWriterFactory(Collections.EMPTY_MAP);
+        JsonWriter jwriter = wfactory.createWriter(writer);
+
+        JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("default.json"));
+
+        Source template = new GraalsonSource("identity_config.js");
+        Source source = new GraalsonSource(jreader);
+        Result result = new GraalsonResult(jwriter);
+
+        TransformerFactory.newInstance().newTemplates(template).newTransformer().transform(source, result);
+
+        assertNotNull(((GraalsonResult) result).getValue());
+
+        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected_config.json")).useDelimiter("\\Z").next();
         String actual = writer.getBuffer().toString();
         System.out.println("actual -->" + actual +"<--");
 

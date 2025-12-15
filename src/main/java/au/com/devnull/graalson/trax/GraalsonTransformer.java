@@ -63,6 +63,7 @@ public class GraalsonTransformer extends Transformer implements Templates {
         JsonStructure value = ((GraalsonSource) input).getJsonStructure();
         Object javaValue = toValue(value);
         getPolyglotContext().getBindings("js").putMember("_", javaValue);
+        getPolyglotContext().getBindings("js").putMember("$$", provider.getConfigInUse());
 
         Value resultValue = getPolyglotContext().eval(((GraalsonSource) this.source).source);
 
