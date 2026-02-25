@@ -14,13 +14,11 @@
     }
   },
   {
-    "op": "replace",
-    "path": "/phoneNumber",
-    "value": [
-      {
-        "type": "mobile",
-        "number": "+61406863323"
-      }
-    ]
+    "op": "add",
+    "path": "/phoneNumber/2",
+    "value": {
+      "type": "mobile",
+      "number": "+61406863323"
+    }
   }
 ]
