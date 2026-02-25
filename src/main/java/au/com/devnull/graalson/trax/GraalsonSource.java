@@ -1,34 +1,65 @@
 package au.com.devnull.graalson.trax;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonException;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import javax.xml.transform.Source;
 
-public class GraalsonSource implements Source, JsonStructure, WritableStructure {
+public final class GraalsonSource
+    implements Source, JsonStructure, WritableStructure
+{
 
     private String systemId;
-    org.graalvm.polyglot.Source source;
     private JsonStructure structure;
+    org.graalvm.polyglot.Source source;
 
     public GraalsonSource(org.graalvm.polyglot.Source source) {
         this.source = source;
     }
 
     public GraalsonSource(String name, Reader reader) throws IOException {
-        this(org.graalvm.polyglot.Source.newBuilder("js", reader, name).build());
+        this(
+            org.graalvm.polyglot.Source.newBuilder("js", reader, name).build()
+        );
+        this.systemId = name;
+    }
+
+    public GraalsonSource(Path sourcePath) throws IOException {
+        this(sourcePath, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    public GraalsonSource(Path sourcePath, Charset encoding)
+        throws IOException {
+        this(
+            sourcePath.toFile().exists()
+                ? sourcePath.toString()
+                : getResourceSystemId(sourcePath.toString()),
+            sourcePath.toFile().exists()
+                ? new FileReader(sourcePath.toFile(), encoding)
+                : new InputStreamReader(
+                      getResourceAsStreamOrThrow(sourcePath.toString())
+                  )
+        );
     }
 
     public GraalsonSource(String resourcePath) throws IOException {
-
-        this(getResourceSystemId(resourcePath), getResourceAsStreamOrThrow(resourcePath));
+        this(
+            getResourceSystemId(resourcePath),
+            getResourceAsStreamOrThrow(resourcePath)
+        );
     }
 
     public GraalsonSource(String name, InputStream is) throws IOException {
@@ -43,16 +74,26 @@ public class GraalsonSource implements Source, JsonStructure, WritableStructure 
         structure = jreader.read();
     }
 
-    private static InputStream getResourceAsStreamOrThrow(String resourcePath) throws IOException {
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
+    public GraalsonSource(JsonStructure structure) {
+        this.structure = structure;
+    }
+
+    private static InputStream getResourceAsStreamOrThrow(String resourcePath)
+        throws IOException {
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(
+            resourcePath
+        );
         if (is == null) {
             throw new IOException("Resource not found: " + resourcePath);
         }
         return is;
     }
 
-    private static String getResourceSystemId(String resourcePath) throws IOException {
-        java.net.URL url = ClassLoader.getSystemClassLoader().getResource(resourcePath);
+    private static String getResourceSystemId(String resourcePath)
+        throws IOException {
+        java.net.URL url = ClassLoader.getSystemClassLoader().getResource(
+            resourcePath
+        );
         if (url == null) {
             throw new IOException("Resource not found: " + resourcePath);
         }
@@ -70,6 +111,15 @@ public class GraalsonSource implements Source, JsonStructure, WritableStructure 
     }
 
     JsonStructure getJsonStructure() {
+        if (structure == null && source != null) {
+            try (
+                JsonReader reader = Json.createReader(
+                    new StringReader(source.getCharacters().toString())
+                )
+            ) {
+                structure = reader.read();
+            }
+        }
         return structure;
     }
 
@@ -101,5 +151,10 @@ public class GraalsonSource implements Source, JsonStructure, WritableStructure 
     @Override
     public void writeStructure(JsonWriter writer) throws JsonException {
         writer.write(this.structure);
+    }
+
+    @Override
+    public String toString() {
+        return "GraalsonSource{" + "systemId=" + systemId + '}';
     }
 }

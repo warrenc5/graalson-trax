@@ -13,38 +13,89 @@ import javax.xml.transform.URIResolver;
  *
  * @author wozza
  */
-public class GraalsonTransformerFactory  extends javax.xml.transform.TransformerFactory{
+public class GraalsonTransformerFactory
+    extends javax.xml.transform.TransformerFactory
+{
 
     private URIResolver resolver;
     private ErrorListener errorListener;
-    private Map<String,Object> attributes = new HashMap<>();
-    private Map<String,Boolean> features = new HashMap<>();
+    private Map<String, Object> attributes = new HashMap<>();
+    private Map<String, Boolean> features = new HashMap<>();
+
+    public static String JSON_MODE_ATTRIBUTE = "JSON_MODE";
+
+    public static enum JsonMode {
+        JSON_TRANSFORM,
+        JSON_MERGE,
+        JSON_DIFF,
+        JSON_PATCH_DIFF,
+        JSON_PATCH_APPLY,
+    }
+
+    /**
+     * *
+     * Equivalent to
+     * System.setProperty("javax.xml.transform.TransformerFactory",
+     * "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
+     */
+    public static void useJavaxXmlTransformTransformerFactory() {
+        System.setProperty(
+            "javax.xml.transform.TransformerFactory",
+            "au.com.devnull.graalson.trax.GraalsonTransformerFactory"
+        );
+    }
+
+    private JsonMode getJsonMode() {
+        Object value = attributes.get(JSON_MODE_ATTRIBUTE);
+        return (value instanceof JsonMode) ? (JsonMode) value : null;
+    }
 
     @Override
-    public Transformer newTransformer(Source source) throws TransformerConfigurationException {
-        if(!(source instanceof GraalsonSource)){
-            throw new TransformerConfigurationException("source must be graalson");
+    public Transformer newTransformer(Source source)
+        throws TransformerConfigurationException {
+        if (!(source instanceof GraalsonSource)) {
+            throw new TransformerConfigurationException(
+                "source must be graalson"
+            );
         }
-        return new GraalsonTransformer(errorListener,resolver,(GraalsonSource) source);
+        return new GraalsonTransformer(
+            errorListener,
+            resolver,
+            (GraalsonSource) source,
+            getJsonMode()
+        );
     }
 
     @Override
-    public Transformer newTransformer() throws TransformerConfigurationException {
-        return new GraalsonTransformer(errorListener, resolver);
+    public Transformer newTransformer()
+        throws TransformerConfigurationException {
+        return new GraalsonTransformer(errorListener, resolver, getJsonMode());
     }
 
     @Override
-    public Templates newTemplates(Source source) throws TransformerConfigurationException {
-
-        if(!(source instanceof GraalsonSource)){
-            throw new TransformerConfigurationException("source must be graalson");
+    public Templates newTemplates(Source source)
+        throws TransformerConfigurationException {
+        if (!(source instanceof GraalsonSource)) {
+            throw new TransformerConfigurationException(
+                "source must be graalson"
+            );
         }
-        return new GraalsonTransformer(errorListener,resolver,(GraalsonSource) source);
+        return new GraalsonTransformer(
+            errorListener,
+            resolver,
+            (GraalsonSource) source,
+            getJsonMode()
+        );
     }
 
     @Override
-    public Source getAssociatedStylesheet(Source source, String media, String title, String charset) throws TransformerConfigurationException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+    public Source getAssociatedStylesheet(
+        Source source,
+        String media,
+        String title,
+        String charset
+    ) throws TransformerConfigurationException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -58,7 +109,8 @@ public class GraalsonTransformerFactory  extends javax.xml.transform.Transformer
     }
 
     @Override
-    public void setFeature(String name, boolean value) throws TransformerConfigurationException {
+    public void setFeature(String name, boolean value)
+        throws TransformerConfigurationException {
         this.features.put(name, value);
     }
 
@@ -86,5 +138,4 @@ public class GraalsonTransformerFactory  extends javax.xml.transform.Transformer
     public ErrorListener getErrorListener() {
         return this.errorListener;
     }
-    
 }

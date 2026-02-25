@@ -13,7 +13,7 @@ import org.graalvm.polyglot.Value;
  *
  * @author wozza
  */
-public class GraalsonResult implements Result, WritableStructure {
+public final class GraalsonResult implements Result, WritableStructure {
 
     private String systemId;
     private Value value;
@@ -58,4 +58,10 @@ public class GraalsonResult implements Result, WritableStructure {
     public void writeStructure(JsonWriter writer) throws JsonException {
         writer.write(this.structure);
     }
+
+    @Override
+    public String toString() {
+        return "GraalsonResult{" + "systemId=" + systemId + '}';
+    }
+
 }

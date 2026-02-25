@@ -7,7 +7,7 @@ import jakarta.json.JsonWriter;
  *
  * @author wozza
  */
-public interface WritableStructure {
+sealed interface WritableStructure permits GraalsonResult, GraalsonSource {
 
     public void writeStructure(JsonWriter writer) throws JsonException;
 

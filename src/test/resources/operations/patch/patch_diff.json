@@ -1,0 +1,26 @@
+[
+  {
+    "op": "remove",
+    "path": "/age"
+  },
+  {
+    "op": "replace",
+    "path": "/address",
+    "value": {
+      "streetAddress": "169 Dead End Circuit",
+      "city": "Nevernever Land",
+      "state": "FI",
+      "postalCode": "1000"
+    }
+  },
+  {
+    "op": "replace",
+    "path": "/phoneNumber",
+    "value": [
+      {
+        "type": "mobile",
+        "number": "+61406863323"
+      }
+    ]
+  }
+]

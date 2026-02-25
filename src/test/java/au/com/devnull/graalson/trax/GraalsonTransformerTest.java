@@ -1,25 +1,24 @@
-package au.com.devnull.graalson;
+package au.com.devnull.graalson.trax;
 
-import au.com.devnull.graalson.trax.GraalsonResult;
-import au.com.devnull.graalson.trax.GraalsonSource;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import jakarta.json.Json;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonWriter;
 import jakarta.json.JsonWriterFactory;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import org.json.JSONException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -31,16 +30,15 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class GraalsonTransformerTest {
 
     @Test
-    public void testTransformer() throws TransformerConfigurationException, TransformerException, IOException, JSONException {
-
-        GraalsonProvider.useJavaxXmlTransformTransformerFactory();
+    public void testTransformer()
+        throws TransformerConfigurationException, TransformerException, IOException, JSONException {
+        GraalsonTransformerFactory.useJavaxXmlTransformTransformerFactory();
 
         Map<String, Object> config = new HashMap<>();
         config.put("spaces", Integer.valueOf(4));
 
         StringWriter writer = new StringWriter();
         JsonWriterFactory wfactory = Json.createWriterFactory(config);
-        //JsonWriter jwriter = wfactory.createWriter(new PrintWriter(System.out));
         JsonWriter jwriter = wfactory.createWriter(writer);
 
         JsonReader jreader = Json.createReader(ClassLoader.getSystemClassLoader().getResourceAsStream("default.json"));
@@ -52,7 +50,7 @@ public class GraalsonTransformerTest {
         long then = System.nanoTime();
         int i = 0;
         int n = 1;
-        
+
         for (i = 0; i < n; i++) {
             TransformerFactory.newInstance().newTemplates(template).newTransformer().transform(source, result);
         }
@@ -60,18 +58,20 @@ public class GraalsonTransformerTest {
         System.out.println((System.nanoTime() - then) / n);
         assertNotNull(((GraalsonResult) result).getValue());
 
-        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json")).useDelimiter("\\Z").next();
+        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected.json"))
+            .useDelimiter("\\Z")
+            .next();
         String actual = writer.getBuffer().toString();
-        System.out.println("actual -->" + actual +"<--");
+        System.out.println("actual -->" + actual + "<--");
 
         assertEquals(expected.length(), actual.length());
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT_ORDER);
     }
 
     @Test
-    public void testTransformerJsConfig() throws TransformerConfigurationException, TransformerException, IOException, JSONException {
-
-        GraalsonProvider.useJavaxXmlTransformTransformerFactory();
+    public void testTransformerJsConfig()
+        throws TransformerConfigurationException, TransformerException, IOException, JSONException {
+        GraalsonTransformerFactory.useJavaxXmlTransformTransformerFactory();
 
         StringWriter writer = new StringWriter();
         JsonWriterFactory wfactory = Json.createWriterFactory(Collections.EMPTY_MAP);
@@ -87,12 +87,13 @@ public class GraalsonTransformerTest {
 
         assertNotNull(((GraalsonResult) result).getValue());
 
-        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected_config.json")).useDelimiter("\\Z").next();
+        String expected = new Scanner(GraalsonTransformerTest.class.getResourceAsStream("/expected_config.json"))
+            .useDelimiter("\\Z")
+            .next();
         String actual = writer.getBuffer().toString();
-        System.out.println("actual -->" + actual +"<--");
+        System.out.println("actual -->" + actual + "<--");
 
         assertEquals(expected.length(), actual.length());
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT_ORDER);
     }
-
 }
